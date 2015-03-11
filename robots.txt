@@ -1,0 +1,4 @@
+User-agent: *
+Disallow:
+
+Sitemap: http://kanjihtmt.github.io/sitemap.xml

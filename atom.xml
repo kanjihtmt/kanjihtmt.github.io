@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[console.log('blog') | puts 'blog']]></title>
+  <link href="http://kanjihtmt.github.io/atom.xml" rel="self"/>
+  <link href="http://kanjihtmt.github.io/"/>
+  <updated>2015-03-12T05:05:20+09:00</updated>
+  <id>http://kanjihtmt.github.io/</id>
+  <author>
+    <name><![CDATA[kanji]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[テスト投稿]]></title>
+    <link href="http://kanjihtmt.github.io/blog/2015/03/12/tesutotou-gao/"/>
+    <updated>2015-03-12T04:55:09+09:00</updated>
+    <id>http://kanjihtmt.github.io/blog/2015/03/12/tesutotou-gao</id>
+    <content type="html"><![CDATA[<p>Octopressからの投稿です。</p>
+]]></content>
+  </entry>
+  
+</feed>
