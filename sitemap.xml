@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>http://kanjihtmt.github.io/blog/2015/03/12/tesutotou-gao/</loc>
+    <loc>http://kanjihtmt.github.io/blog/2015/03/14/infrastructure-as-code/</loc>
+    <lastmod>2015-03-14T08:20:37+09:00</lastmod>
+  </url>
+  <url>
+    <loc>http://kanjihtmt.github.io/blog/2015/03/12/getting-started/</loc>
     <lastmod>2015-03-12T04:55:09+09:00</lastmod>
   </url>
   <url>
@@ -9,5 +13,8 @@
   </url>
   <url>
     <loc>http://kanjihtmt.github.io/</loc>
+  </url>
+  <url>
+    <loc>http://kanjihtmt.github.io/blog/categories/ruby/</loc>
   </url>
 </urlset>

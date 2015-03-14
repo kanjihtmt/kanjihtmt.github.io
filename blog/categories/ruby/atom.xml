@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[console.log('blog') | puts 'blog']]></title>
-  <link href="http://kanjihtmt.github.io/atom.xml" rel="self"/>
+  <title><![CDATA[Category: Ruby | console.log('blog') | puts 'blog']]></title>
+  <link href="http://kanjihtmt.github.io/blog/categories/ruby/atom.xml" rel="self"/>
   <link href="http://kanjihtmt.github.io/"/>
   <updated>2015-03-14T14:46:17+09:00</updated>
   <id>http://kanjihtmt.github.io/</id>
@@ -40,15 +40,6 @@
 
 <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
 
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[ブログを始めました。]]></title>
-    <link href="http://kanjihtmt.github.io/blog/2015/03/12/getting-started/"/>
-    <updated>2015-03-12T04:55:09+09:00</updated>
-    <id>http://kanjihtmt.github.io/blog/2015/03/12/getting-started</id>
-    <content type="html"><![CDATA[<p>ブログをGithubで書くことにしました。</p>
 ]]></content>
   </entry>
   
