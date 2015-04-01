@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[console.log('blog') | puts 'blog']]></title>
-  <link href="http://kanjihtmt.github.io/atom.xml" rel="self"/>
+  <title><![CDATA[Category: N2jk | console.log('blog') | puts 'blog']]></title>
+  <link href="http://kanjihtmt.github.io/blog/categories/n2jk/atom.xml" rel="self"/>
   <link href="http://kanjihtmt.github.io/"/>
   <updated>2015-04-01T22:46:05+09:00</updated>
   <id>http://kanjihtmt.github.io/</id>
@@ -55,44 +55,6 @@
 <p>その通りです。社内でアジャイルなんて言ったことないです。</p>
 
 <p>ということで、見当違いなことを書いた訳ではないことが分かってホッとしました。技術コニュニティにはアジャイルの亜種のように思われたりしますし、経営者の方には「ほんとうにこの本に書かれたとおりのことが出来るのだろうか？」と思われる方もいらっしゃるかもしれませんが、まずは書籍を読んで分からないことがあれば、直接ご本人にお聞きすればよいと思います。僕は「ビール片手に納品の無い受託開発を語る会」があり、そこで直接、倉貫さんにたくさん質問をしました。その都度、理路整然とした答えが返ってきました。不思議と論破されているような感じはなく、逆に清々かったです。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Infrastructure as Code]]></title>
-    <link href="http://kanjihtmt.github.io/blog/2015/03/14/infrastructure-as-code/"/>
-    <updated>2015-03-14T08:20:37+09:00</updated>
-    <id>http://kanjihtmt.github.io/blog/2015/03/14/infrastructure-as-code</id>
-    <content type="html"><![CDATA[<p>色々あってしばらく投稿できなく、いまさら感がありますが2/14の「<a href="http://osh-web.github.io/2015/">オープンセミナー2015@広島</a>」に参加しました。</p>
-
-<p>普段から開発環境やサーバを構築するのにプロビジョニングツールやVagrant等を使っていましたので、僕よりも実践で活用されている方の経験を聞け、自分自身も考えが整理できました。去年はテスト駆動開発、今年は構成管理がテーマとして続き、ソフトウェア開発の現場でホットなことを毎年扱う良いイベントになってきたなと思いました。</p>
-
-<p>広島でも最近、勉強会やコミュニティが活性化して来て、ますます面白くなっている感じがします。</p>
-
-<p>僕も一応、懇親会のLTで発表をしました。</p>
-
-<iframe src="http://www.slideshare.net/kanjihatamoto/slideshelf" width="490px" height="470px" frameborder="0" marginwidth="0" marginheight="0" scrolling="no" style="border:none;" allowfullscreen webkitallowfullscreen mozallowfullscreen></iframe>
-
-
-<p>僕は新しい技術であれば何でも良いわけではなく、新しいパラダイムやアプローチで既存のやり方や仕組みを変えてしまうようなものが好きですし、そういった技術にすぐに反応してしまいます。「Infrastructure as Code」という考えはこれまでサーバを構築したり運用してきた人の暗黙知をコードとして落としこむことに意味があると思っております。脅威とかリスクはなにか？を考えるとある日突然、サーバ担当者が会社に来なくなるとか退社するという現実です。
-そういった現実に対してプロビジョニングツールやServerspecといったツールを利用することで面倒なExcelを使った運用管理ドキュメントの保守(このドキュメント自体が保守されないですが)や面倒な引き継ぎ作業といったことが無くなると考え、これまでこれらの技術と向き合ってきました。そういったベースがあり自分の考えや知見をLTしてみました。</p>
-
-<p>思った以上に反響があり、個人的にはServerspecの作者の方からコメントを頂けたのが何より嬉しかったです。自分が尊敬しているエンジニアの方からそういうのがあると励みにもなります。ありがとうございました。</p>
-
-<blockquote class="twitter-tweet" data-cards="hidden" lang="ja"><p>Itamae がフィーチャーされてる。良い資料。 ー Infrastructure as codeのススメ <a href="http://t.co/NlTcthu9mz">http://t.co/NlTcthu9mz</a> via <a href="https://twitter.com/SlideShare">@SlideShare</a></p>&mdash; Gosuke Miyashita (@gosukenator) <a href="https://twitter.com/gosukenator/status/567138412969197568">2015, 2月 16</a></blockquote>
-
-
-<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[ブログを始めました。]]></title>
-    <link href="http://kanjihtmt.github.io/blog/2015/03/12/getting-started/"/>
-    <updated>2015-03-12T04:55:09+09:00</updated>
-    <id>http://kanjihtmt.github.io/blog/2015/03/12/getting-started</id>
-    <content type="html"><![CDATA[<p>ブログをGithubで書くことにしました。</p>
 ]]></content>
   </entry>
   
