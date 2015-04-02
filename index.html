@@ -9,7 +9,7 @@
   <meta name="author" content="kanji">
 
   
-  <meta name="description" content="僕は「納品をなくせばうまくいく」という「納品のない受託開発」の書籍が出版されてすぐに購入し、何度か繰り返し読んだのですが、毎回「これは面白いわ−！」と読む度に思えました。時間が経ち自分の腹に落ちてきた部分もありますので、今日は僕が思う「納品のない受託開発」 &hellip;">
+  <meta name="description" content="Rails初心者です。頑張ってます。Ruby on Railsのscaffoldで生成されたコードを全て説明できるようになるようにと言われたので、説明してみます。 bundle exec rails g scaffold Entry title:string body:text ファイル構成 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -90,6 +90,452 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2015/04/02/scaffold/">Railsのscaffoldで生成されたコードを1行1行説明する</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2015-04-02T20:30:31+09:00'><span class='date'><span class='date-month'>Apr</span> <span class='date-day'>2</span><span class='date-suffix'>nd</span>, <span class='date-year'>2015</span></span> <span class='time'>8:30 pm</span></time>
+        
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Rails初心者です。頑張ってます。Ruby on Railsのscaffoldで生成されたコードを全て説明できるようになるようにと言われたので、説明してみます。</p>
+
+<pre><code>bundle exec rails g scaffold Entry title:string body:text
+</code></pre>
+
+<h2>ファイル構成</h2>
+
+<p>scaffoldを実行すると以下のファイルが生成されます。その他に生成されるテストコードとかマイグレーションファイルは無視しています。</p>
+
+<pre><code>PROJECT_ROOT
+ |- controllers
+ |    |- entries_controller.rb
+ |- helpers
+ |    |- entries_helper.rb
+ |- models
+ |    |- entry.rb
+ |- views
+ |    |- _form.html.erb
+ |    |- edit.html.erb
+ |    |- index.html.erb
+ |    |- index.json.jbuilder
+ |    |- new.html.erb
+ |    |- show.html.erb
+ |    |- show.json.jbuilder
+</code></pre>
+
+<h2>コントローラー</h2>
+
+<p>まずはコントローラーからです。コントローラーは空のクラスであるApplicationControllerを継承してます。コントローラーの共通処理を定義するためにこのクラスは存在しています。ApplicationControllerは、さらにその親クラスであるActionController::Baseを継承しています。このコードはprotect_from_forgeryメソッドによりCSRF対策をデフォルトで有効にしています。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">ApplicationController</span> <span class="o">&lt;</span> <span class="no">ActionController</span><span class="o">::</span><span class="no">Base</span>
+</span><span class='line'>  <span class="n">protect_from_forgery</span> <span class="ss">with</span><span class="p">:</span> <span class="ss">:exception</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Entryコントローラにはindex, show, new, edit, create, update, destroyアクションが定義されます。規約によりアクション、URL、HTTPメソッドの対応関係が決まっています。これはRestからの設計思想で以下のようになっています。</p>
+
+<table>
+<thead>
+<tr>
+<th> アクション </th>
+<th> URLパス         </th>
+<th> HTTP METHOD </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td> index      </td>
+<td> /entries/       </td>
+<td> GET         </td>
+</tr>
+<tr>
+<td> show       </td>
+<td> /entries/1      </td>
+<td> GET         </td>
+</tr>
+<tr>
+<td> new        </td>
+<td> /entries/new    </td>
+<td> GET         </td>
+</tr>
+<tr>
+<td> edit       </td>
+<td> /entries/1/edit </td>
+<td> GET         </td>
+</tr>
+<tr>
+<td> create     </td>
+<td> /entries        </td>
+<td> POST        </td>
+</tr>
+<tr>
+<td> update     </td>
+<td> /entries/1      </td>
+<td> PATCH       </td>
+</tr>
+<tr>
+<td> destroy    </td>
+<td> /entries/1      </td>
+<td> DELET       </td>
+</tr>
+</tbody>
+</table>
+
+
+<p>そしてこの仕組みを作っているのがルーティングになります。ブロック内でresourcesメソッドにシンボルを渡すことでRailsがRestアクセスを許可します。exceptや、onlyなどのオプションでアクセスを制御することもできます。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">Rails</span><span class="o">.</span><span class="n">application</span><span class="o">.</span><span class="n">routes</span><span class="o">.</span><span class="n">draw</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">resources</span> <span class="ss">:entries</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>通常は<code>HTTPメソッド 'URLパス', 'コントローラ#アクション'</code>の形式で定義していきますが、scaffoldが追記したルーティングはリソースベースのルーティングになります。これは以下のルーティング定義と同じになります。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">Rails</span><span class="o">.</span><span class="n">application</span><span class="o">.</span><span class="n">routes</span><span class="o">.</span><span class="n">draw</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">get</span> <span class="s1">&#39;entries&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;entries#index&#39;</span>
+</span><span class='line'>  <span class="n">get</span> <span class="s1">&#39;entries/:id&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;entries#show&#39;</span>
+</span><span class='line'>  <span class="n">get</span> <span class="s1">&#39;entries/new&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;entries#new&#39;</span>
+</span><span class='line'>  <span class="n">get</span> <span class="s1">&#39;entries/:id/edit&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;entries#edit&#39;</span>
+</span><span class='line'>  <span class="n">post</span> <span class="s1">&#39;entries&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;entries#create&#39;</span>
+</span><span class='line'>  <span class="n">patch</span> <span class="s1">&#39;entries/:id&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;entries#update&#39;</span>
+</span><span class='line'>  <span class="n">delete</span> <span class="s1">&#39;entries/:id&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;entries#delete&#39;</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>ビューで使用されるルーティング名もここで定義されます。</p>
+
+<table>
+<thead>
+<tr>
+<th> URLパス         </th>
+<th> ルーティング名 </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td> /entries        </td>
+<td> :entries       </td>
+</tr>
+<tr>
+<td> /entries/1      </td>
+<td> :entry         </td>
+</tr>
+<tr>
+<td> /entries/new    </td>
+<td> :new_entry     </td>
+</tr>
+<tr>
+<td> /entries/1/edit </td>
+<td> :edit_entry    </td>
+</tr>
+</tbody>
+</table>
+
+
+<p>あとコントローラーをざくっと見て感じたことは、scaffoldで生成したコントローラのprivateメソッドは1つインデントを下げているのでコーディング規約的にはこれを覚えた方がいいかなと思います。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="kp">private</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">set_entry</span>
+</span><span class='line'>    <span class="vi">@entry</span> <span class="o">=</span> <span class="no">Entry</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:id</span><span class="o">]</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>beforeアクション</h3>
+
+<p>各アクションが実行される前に必ず処理されます。アクションで処理を共通化したい場合はここに書きます。これらはshow, edit, update, destroyアクションの前にset_entryというメソッドを実行するよう定義しています。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">before_action</span> <span class="ss">:set_entry</span><span class="p">,</span> <span class="ss">only</span><span class="p">:</span> <span class="o">[</span><span class="ss">:show</span><span class="p">,</span> <span class="ss">:edit</span><span class="p">,</span> <span class="ss">:update</span><span class="p">,</span> <span class="ss">:destroy</span><span class="o">]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>indexアクション</h3>
+
+<p>Entryモデルから全件取得し、@entriesというインスタンス変数に代入しているだけです。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">index</span>
+</span><span class='line'>  <span class="vi">@entries</span> <span class="o">=</span> <span class="no">Entry</span><span class="o">.</span><span class="n">all</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>showアクション</h3>
+
+<p>メソッドを定義しているだけで処理内容がありませんがbefore_actionのため処理内容がアクション内になくてもビューにEntryオブジェクトの値が渡ります。</p>
+
+<h3>newアクション</h3>
+
+<p>Entryモデルのインスタンスを生成して@entryインスタンス変数に渡しています。</p>
+
+<h3>editアクション</h3>
+
+<p>こちらもメソッドを定義しているだけで実装がありませんが、showアクションと同様、before_actionに処理を任せています。</p>
+
+<h3>createアクション</h3>
+
+<p>POSTされた値を受け取ってentry_paramsプライベートメソッドに処理をさせます。これは何をやっているかというとStrong Parameterという機能です。たとえばこのentitiesというテーブルにはではtitleとbodyといったカラム以外に、created_atなどユーザには表示しないシステムの都合上のカラムなどもあります。これを不正なアクセスで改ざんされる危険性がありますので、titleとbodyのみを許可するようこのメソッドで処理しています。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nf">entry_params</span>
+</span><span class='line'>  <span class="n">params</span><span class="o">.</span><span class="n">require</span><span class="p">(</span><span class="ss">:entry</span><span class="p">)</span><span class="o">.</span><span class="n">permit</span><span class="p">(</span><span class="ss">:title</span><span class="p">,</span> <span class="ss">:body</span><span class="p">)</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>こうして許可されたパラメータだけが返ってくるのでそのパラメータを使って、Entryモデルを初期化します。respond_toメソッドにブロックを渡してHTTPレスポンスの処理を行います。formatオブジェクトのhtmlメソッドにはHTMLを返すための処理を定義します、jsonメソッドにはJSONを返すための処理を定義します。</p>
+
+<p>問題無くエントリーが保存された場合は、HTMLを取得するためのアクセスならばリダイレクトします。JSONを取得するためのアクセスならばJSONを返します。保存に失敗した場合は、HTMLを取得するためのアクセスならばnewアクションに戻して再入力を施します。JSONを取得するためのアクセスならば、クライアントにJSONでエラー状態のJSONを返します。
+saveメソッドは、if文の条件に使われているので成功したらtrue, 失敗したらfalseを返しますが、save!と破壊的メソッドにすれば失敗した場合は例外がraiseされます。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nf">create</span>
+</span><span class='line'>  <span class="vi">@entry</span> <span class="o">=</span> <span class="no">Entry</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">entry_params</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">respond_to</span> <span class="k">do</span> <span class="o">|</span><span class="nb">format</span><span class="o">|</span>
+</span><span class='line'>    <span class="k">if</span> <span class="vi">@entry</span><span class="o">.</span><span class="n">save</span>
+</span><span class='line'>      <span class="nb">format</span><span class="o">.</span><span class="n">html</span> <span class="p">{</span> <span class="n">redirect_to</span> <span class="vi">@entry</span><span class="p">,</span> <span class="ss">notice</span><span class="p">:</span> <span class="s1">&#39;Entry was successfully created.&#39;</span> <span class="p">}</span>
+</span><span class='line'>      <span class="nb">format</span><span class="o">.</span><span class="n">json</span> <span class="p">{</span> <span class="n">render</span> <span class="ss">:show</span><span class="p">,</span> <span class="ss">status</span><span class="p">:</span> <span class="ss">:created</span><span class="p">,</span> <span class="ss">location</span><span class="p">:</span> <span class="vi">@entry</span> <span class="p">}</span>
+</span><span class='line'>    <span class="k">else</span>
+</span><span class='line'>      <span class="nb">format</span><span class="o">.</span><span class="n">html</span> <span class="p">{</span> <span class="n">render</span> <span class="ss">:new</span> <span class="p">}</span>
+</span><span class='line'>      <span class="nb">format</span><span class="o">.</span><span class="n">json</span> <span class="p">{</span> <span class="n">render</span> <span class="ss">json</span><span class="p">:</span> <span class="vi">@entry</span><span class="o">.</span><span class="n">errors</span><span class="p">,</span> <span class="ss">status</span><span class="p">:</span> <span class="ss">:unprocessable_entity</span> <span class="p">}</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>updateアクション</h3>
+
+<p>モデルのupdateメソッドを呼ぶところとメッセージ以外はほぼ、createアクションと同じです。</p>
+
+<h3>destroyアクション</h3>
+
+<p>モデルのdestroyメソッドを呼び出し、リダイレクトします。ここでredirect_toメソッドの引数でentries_urlというメソッドが呼び出されていますが、このようにルーティングで定義されたルーティング名である:entriesに_urlというサフィックスを付けたメソッドを呼び出すことで/entriesへのURLを生成してくれます。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nf">destroy</span>
+</span><span class='line'>  <span class="vi">@entry</span><span class="o">.</span><span class="n">destroy</span>
+</span><span class='line'>  <span class="n">respond_to</span> <span class="k">do</span> <span class="o">|</span><span class="nb">format</span><span class="o">|</span>
+</span><span class='line'>    <span class="nb">format</span><span class="o">.</span><span class="n">html</span> <span class="p">{</span> <span class="n">redirect_to</span> <span class="n">entries_url</span><span class="p">,</span> <span class="ss">notice</span><span class="p">:</span> <span class="s1">&#39;Entry was successfully destroyed.&#39;</span> <span class="p">}</span>
+</span><span class='line'>    <span class="nb">format</span><span class="o">.</span><span class="n">json</span> <span class="p">{</span> <span class="n">head</span> <span class="ss">:no_content</span> <span class="p">}</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>モデル</h2>
+
+<p>モデルはバリデーションも定義してませんので2行だけです。これだけで多くの機能を使うことができます。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">Entry</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>ビュー</h2>
+
+<p>ビューはRailsのデフォルトではERBが使われます。拡張子が.jbuilderはJSONのビューになりますが、ここでは取り扱わず、erbのみ説明します。</p>
+
+<h3>index.html.erb</h3>
+
+<p>重要なところは以下の箇所です。コントローラから渡されたエントリー一覧をeachメソッドで繰り返しています。モデルのプロパティを呼び出しながら値を表示します。link_toメソッドはビューのヘルパーメソッドで、第1引数にリンクの文字列、第2引数にURLパスを指定します。showやdestroyの場合はentryオブジェクトを渡すだけでURLパスにしてくれます。editやnewに関してはルーティング名に_pathをつけたヘルパーメソッドがURLパスを出力してくれます。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="o">&lt;</span><span class="sx">% @entries.each </span><span class="k">do</span> <span class="o">|</span><span class="n">entry</span><span class="o">|</span> <span class="sx">%&gt;</span>
+</span><span class='line'><span class="sx">  &lt;tr&gt;</span>
+</span><span class='line'>    <span class="o">&lt;</span><span class="n">td</span><span class="o">&gt;&lt;</span><span class="sx">%= entry.title %&gt;&lt;/td&gt;</span>
+</span><span class='line'><span class="sx">    &lt;td&gt;&lt;%=</span> <span class="n">entry</span><span class="o">.</span><span class="n">body</span> <span class="sx">%&gt;&lt;/td&gt;</span>
+</span><span class='line'>    <span class="o">&lt;</span><span class="n">td</span><span class="o">&gt;&lt;</span><span class="sx">%= link_to &#39;Show&#39;, entry_path %&gt;entry_pathにしたよ！&lt;/td&gt;</span>
+</span><span class='line'><span class="sx">    &lt;td&gt;&lt;%=</span> <span class="n">link_to</span> <span class="s1">&#39;Edit&#39;</span><span class="p">,</span> <span class="n">edit_entry_path</span><span class="p">(</span><span class="n">entry</span><span class="p">)</span> <span class="sx">%&gt;&lt;/td&gt;</span>
+</span><span class='line'>    <span class="o">&lt;</span><span class="n">td</span><span class="o">&gt;&lt;</span><span class="sx">%= link_to &#39;Destroy&#39;, entry, method: :delete, data: { confirm: &#39;Are you sure?&#39; } %&gt;&lt;/td&gt;</span>
+</span><span class='line'><span class="sx">  &lt;/tr&gt;</span>
+</span><span class='line'><span class="sx">&lt;% end %&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="sx">&lt;%=</span> <span class="n">link_to</span> <span class="s1">&#39;New Entry&#39;</span><span class="p">,</span> <span class="n">new_entry_path</span> <span class="o">%&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>削除のlink_toはちょっと複雑です、第1引数にentryオブジェクトを渡すのはshowアクションへのリンクと同じですが、第3引数にハッシュを渡しています。<code>method: :delete</code>と定義することで<code>data-method="delete"</code>という属性を出力します。この指定をすることでRailsはリンクをGETではなくDELETEでアクセスします。<code>data: { conform: 'Are you sure?' }</code>と定義することで<code>data-confirm="Are you sure?"</code>という属性を出力します。これにより削除のリンクをクリックするとconfirmダイアログが出力されます。</p>
+
+<h3>show.html.erb</h3>
+
+<p>このビューも重要なのは以下の箇所です。ルーティング名である:entries, :edit_entryに_pathをつけたヘルパーメソッドによりURLパスを指定しています。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="o">&lt;</span><span class="sx">%= link_to &#39;Edit&#39;, edit_entry_path(@entry) %&gt; |</span>
+</span><span class='line'><span class="sx">&lt;%=</span> <span class="n">link_to</span> <span class="s1">&#39;Back&#39;</span><span class="p">,</span> <span class="n">entries_path</span> <span class="o">%&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>new.html.erb</h3>
+
+<p>ビューでのrenderヘルパーメソッドは引数に文字列を指定すると、<code>_指定した文字列.html.erb</code>のファイルを読み込みます。フォームの内容は<code>_form.html.erb</code>に記述されています。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="o">&lt;</span><span class="sx">%= render &#39;form&#39; %&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="sx">&lt;%=</span> <span class="n">link_to</span> <span class="s1">&#39;Back&#39;</span><span class="p">,</span> <span class="n">entries_path</span> <span class="o">%&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>edit.html.erb</h3>
+
+<p><code>new.html.erb</code>とほぼ一緒です。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="o">&lt;</span><span class="sx">%= render &#39;form&#39; %&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="sx">&lt;%=</span> <span class="n">link_to</span> <span class="s1">&#39;Show&#39;</span><span class="p">,</span> <span class="vi">@entry</span> <span class="sx">%&gt; |</span>
+</span><span class='line'><span class="sx">&lt;%= link_to &#39;Back&#39;, entries_path %&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>_form.html.erb</h3>
+
+<p>フォームヘルパーにエントリーオブジェクトを渡してブロックでフォーム内容を定義していきます。最初にあるのはエラー処理になります。フォームを作成するには、フォームオブジェクトのヘルパーメソッドにモデルの属性をシンボルを渡していけばHTMLでフォームを出力します。このヘルパーはなにか出てくる度にひとつずつ覚えていくしかないと思います。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="o">&lt;</span><span class="sx">%= form_for(@entry) do |f| %&gt;</span>
+</span><span class='line'><span class="sx">  &lt;% if @entry.errors.any? %&gt;</span>
+</span><span class='line'><span class="sx">    &lt;div id=</span><span class="s2">&quot;error_explanation&quot;</span><span class="o">&gt;</span>
+</span><span class='line'>      <span class="o">&lt;</span><span class="n">h2</span><span class="o">&gt;&lt;</span><span class="sx">%= pluralize(@entry.errors.count, &quot;error&quot;) %&gt; prohibited this entry from being saved:&lt;/h2&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="sx">      &lt;ul&gt;</span>
+</span><span class='line'><span class="sx">      &lt;% @entry.errors.full_messages.each do |message| %&gt;</span>
+</span><span class='line'><span class="sx">        &lt;li&gt;&lt;%=</span> <span class="n">message</span> <span class="sx">%&gt;&lt;/li&gt;</span>
+</span><span class='line'>      <span class="o">&lt;</span><span class="sx">% end %&gt;</span>
+</span><span class='line'><span class="sx">      &lt;/ul&gt;</span>
+</span><span class='line'>    <span class="o">&lt;</span><span class="sr">/div&gt;</span>
+</span><span class='line'><span class="sr">  &lt;% end %&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="sr">  &lt;div class=&quot;field&quot;&gt;</span>
+</span><span class='line'><span class="sr">    &lt;%= f.label :title %&gt;&lt;br&gt;</span>
+</span><span class='line'><span class="sr">    &lt;%= f.text_field :title %&gt;</span>
+</span><span class='line'><span class="sr">  &lt;/</span><span class="n">div</span><span class="o">&gt;</span>
+</span><span class='line'>  <span class="o">&lt;</span><span class="n">div</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;field&quot;</span><span class="o">&gt;</span>
+</span><span class='line'>    <span class="o">&lt;</span><span class="sx">%= f.label :body %&gt;&lt;br&gt;</span>
+</span><span class='line'><span class="sx">    &lt;%=</span> <span class="n">f</span><span class="o">.</span><span class="n">text_area</span> <span class="ss">:body</span> <span class="sx">%&gt;</span>
+</span><span class='line'><span class="sx">  &lt;/div&gt;</span>
+</span><span class='line'>  <span class="o">&lt;</span><span class="n">div</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;actions&quot;</span><span class="o">&gt;</span>
+</span><span class='line'>    <span class="o">&lt;%=</span> <span class="n">f</span><span class="o">.</span><span class="n">submit</span> <span class="sx">%&gt;</span>
+</span><span class='line'><span class="sx">  &lt;/div&gt;</span>
+</span><span class='line'><span class="o">&lt;</span><span class="sx">% end </span><span class="o">%&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h1>まとめ</h1>
+
+<p>1行、1行説明することで理解ができました。基本をやりなさいと言われた時、「それぐらい分かる」と思いがちで実際に素直にやらない場合もあるかもしれませんが、経験的にこの辺の基礎的なことは、もうバカみたいに実直にやった方がいいと思います。仕組みが分かったので、後はscaffoldを何度か写経したら完璧です。</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
