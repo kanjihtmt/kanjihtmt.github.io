@@ -139,9 +139,9 @@
  |    |- show.json.jbuilder
 </code></pre>
 
-<h2>コントローラー</h2>
+<h2>コントローラ</h2>
 
-<p>まずはコントローラーからです。コントローラーは空のクラスであるApplicationControllerを継承してます。コントローラーの共通処理を定義するためにこのクラスは存在しています。ApplicationControllerは、さらにその親クラスであるActionController::Baseを継承しています。このコードはprotect_from_forgeryメソッドによりCSRF対策をデフォルトで有効にしています。</p>
+<p>まずはコントローラからです。コントローラは空のクラスであるApplicationControllerを継承してます。コントローラの共通処理を定義するためにこのクラスは存在しています。ApplicationControllerは、さらにその親クラスであるActionController::Baseを継承しています。このコードはprotect_from_forgeryメソッドによりCSRF対策をデフォルトで有効にしています。</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -196,13 +196,13 @@
 <tr>
 <td> destroy    </td>
 <td> /entries/1      </td>
-<td> DELET       </td>
+<td> DELETE      </td>
 </tr>
 </tbody>
 </table>
 
 
-<p>そしてこの仕組みを作っているのがルーティングになります。ブロック内でresourcesメソッドにシンボルを渡すことでRailsがRestアクセスを許可します。exceptや、onlyなどのオプションでアクセスを制御することもできます。</p>
+<p>そしてこの仕組みを作っているのがルーティングになります。ブロック内でresourcesメソッドにシンボルを渡すことでRailsがRESTアクセスを許可します。exceptや、onlyなどのオプションでアクセスを制御することもできます。</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -266,7 +266,7 @@
 </table>
 
 
-<p>あとコントローラーをざくっと見て感じたことは、scaffoldで生成したコントローラのprivateメソッドは1つインデントを下げているのでコーディング規約的にはこれを覚えた方がいいかなと思います。</p>
+<p>あとコントローラのソースをざっと見て感じたことは、scaffoldで生成したコントローラのprivateメソッドは1つインデントを下げているのでコーディング規約的にはこれを覚えた方がいいかなと思います。</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -303,7 +303,7 @@
 
 <h3>showアクション</h3>
 
-<p>メソッドを定義しているだけで処理内容がありませんがbefore_actionのため処理内容がアクション内になくてもビューにEntryオブジェクトの値が渡ります。</p>
+<p>メソッドを定義しているだけで処理内容がありませんが、before_actionが実行されるため処理内容がアクション内になくてもビューにEntryオブジェクトの値が渡ります。</p>
 
 <h3>newアクション</h3>
 
@@ -311,11 +311,11 @@
 
 <h3>editアクション</h3>
 
-<p>こちらもメソッドを定義しているだけで実装がありませんが、showアクションと同様、before_actionに処理を任せています。</p>
+<p>こちらもメソッドを定義しているだけで実装がありませんが、showアクションと同様、before_actionで処理を任せています。</p>
 
 <h3>createアクション</h3>
 
-<p>POSTされた値を受け取ってentry_paramsプライベートメソッドに処理をさせます。これは何をやっているかというとStrong Parameterという機能です。たとえばこのentitiesというテーブルにはではtitleとbodyといったカラム以外に、created_atなどユーザには表示しないシステムの都合上のカラムなどもあります。これを不正なアクセスで改ざんされる危険性がありますので、titleとbodyのみを許可するようこのメソッドで処理しています。</p>
+<p>POSTされた値を受け取ってentry_paramsプライベートメソッドに処理をさせます。これは何をやっているかというとStrong Parameterという機能です。たとえばこのentitiesというテーブルにはtitleとbodyといったカラム以外に、created_atなどユーザには表示しないシステムの都合上のカラムなどもあります。不正なアクセスで改ざんされる危険性がありますので、titleとbodyのみを許可するようこのメソッドで処理しています。</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -326,7 +326,7 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>こうして許可されたパラメータだけが返ってくるのでそのパラメータを使って、Entryモデルを初期化します。respond_toメソッドにブロックを渡してHTTPレスポンスの処理を行います。formatオブジェクトのhtmlメソッドにはHTMLを返すための処理を定義します、jsonメソッドにはJSONを返すための処理を定義します。</p>
+<p>こうして許可されたパラメータだけが返ってくるので、そのパラメータを使ってEntryモデルを初期化します。respond_toメソッドのブロックでHTTPレスポンスの処理を行います。formatオブジェクトのhtmlメソッドにはHTMLを返すための処理を定義します、jsonメソッドはJSONを返すための処理を定義します。</p>
 
 <p>問題無くエントリーが保存された場合は、HTMLを取得するためのアクセスならばリダイレクトします。JSONを取得するためのアクセスならばJSONを返します。保存に失敗した場合は、HTMLを取得するためのアクセスならばnewアクションに戻して再入力を施します。JSONを取得するためのアクセスならば、クライアントにJSONでエラー状態のJSONを返します。
 saveメソッドは、if文の条件に使われているので成功したらtrue, 失敗したらfalseを返しますが、save!と破壊的メソッドにすれば失敗した場合は例外がraiseされます。</p>
@@ -362,7 +362,7 @@ saveメソッドは、if文の条件に使われているので成功したらtr
 
 <h3>updateアクション</h3>
 
-<p>モデルのupdateメソッドを呼ぶところとメッセージ以外はほぼ、createアクションと同じです。</p>
+<p>モデルのupdateメソッドを呼ぶところとメッセージ以外、ほぼcreateアクションと同じです。</p>
 
 <h3>destroyアクション</h3>
 
@@ -419,7 +419,7 @@ saveメソッドは、if文の条件に使われているので成功したらtr
 </span><span class='line'><span class="sx">  &lt;tr&gt;</span>
 </span><span class='line'>    <span class="o">&lt;</span><span class="n">td</span><span class="o">&gt;&lt;</span><span class="sx">%= entry.title %&gt;&lt;/td&gt;</span>
 </span><span class='line'><span class="sx">    &lt;td&gt;&lt;%=</span> <span class="n">entry</span><span class="o">.</span><span class="n">body</span> <span class="sx">%&gt;&lt;/td&gt;</span>
-</span><span class='line'>    <span class="o">&lt;</span><span class="n">td</span><span class="o">&gt;&lt;</span><span class="sx">%= link_to &#39;Show&#39;, entry_path %&gt;entry_pathにしたよ！&lt;/td&gt;</span>
+</span><span class='line'>    <span class="o">&lt;</span><span class="n">td</span><span class="o">&gt;&lt;</span><span class="sx">%= link_to &#39;Show&#39;, entry_path %&gt;&lt;/td&gt;</span>
 </span><span class='line'><span class="sx">    &lt;td&gt;&lt;%=</span> <span class="n">link_to</span> <span class="s1">&#39;Edit&#39;</span><span class="p">,</span> <span class="n">edit_entry_path</span><span class="p">(</span><span class="n">entry</span><span class="p">)</span> <span class="sx">%&gt;&lt;/td&gt;</span>
 </span><span class='line'>    <span class="o">&lt;</span><span class="n">td</span><span class="o">&gt;&lt;</span><span class="sx">%= link_to &#39;Destroy&#39;, entry, method: :delete, data: { confirm: &#39;Are you sure?&#39; } %&gt;&lt;/td&gt;</span>
 </span><span class='line'><span class="sx">  &lt;/tr&gt;</span>
@@ -429,7 +429,7 @@ saveメソッドは、if文の条件に使われているので成功したらtr
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>削除のlink_toはちょっと複雑です、第1引数にentryオブジェクトを渡すのはshowアクションへのリンクと同じですが、第3引数にハッシュを渡しています。<code>method: :delete</code>と定義することで<code>data-method="delete"</code>という属性を出力します。この指定をすることでRailsはリンクをGETではなくDELETEでアクセスします。<code>data: { conform: 'Are you sure?' }</code>と定義することで<code>data-confirm="Are you sure?"</code>という属性を出力します。これにより削除のリンクをクリックするとconfirmダイアログが出力されます。</p>
+<p>削除のlink_toはちょっと複雑です、第2引数にentryオブジェクトを渡すのはshowアクションへのリンクと同じですが、第3引数にハッシュを渡しています。<code>method: :delete</code>と定義することで<code>data-method="delete"</code>という属性を出力します。この指定をすることでRailsはリンクをGETではなくDELETEでアクセスします。<code>data: { conform: 'Are you sure?' }</code>と定義することで<code>data-confirm="Are you sure?"</code>という属性を出力します。これにより削除のリンクをクリックするとconfirmダイアログが出力されます。</p>
 
 <h3>show.html.erb</h3>
 
@@ -472,7 +472,7 @@ saveメソッドは、if文の条件に使われているので成功したらtr
 
 <h3>_form.html.erb</h3>
 
-<p>フォームヘルパーにエントリーオブジェクトを渡してブロックでフォーム内容を定義していきます。最初にあるのはエラー処理になります。フォームを作成するには、フォームオブジェクトのヘルパーメソッドにモデルの属性をシンボルを渡していけばHTMLでフォームを出力します。このヘルパーはなにか出てくる度にひとつずつ覚えていくしかないと思います。</p>
+<p>フォームヘルパーにエントリーオブジェクトを渡してブロックでフォーム内容を定義していきます。最初にあるのはエラー処理になります。フォームを作成するには、フォームオブジェクトのヘルパーメソッドにモデルの属性をシンボルを渡していけばHTMLでフォームを出力します。フォームヘルパーはひとつずつ覚えていくしかないと思います。</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -529,7 +529,7 @@ saveメソッドは、if文の条件に使われているので成功したらtr
 
 <h1>まとめ</h1>
 
-<p>1行、1行説明することで理解ができました。基本をやりなさいと言われた時、「それぐらい分かる」と思いがちで実際に素直にやらない場合もあるかもしれませんが、経験的にこの辺の基礎的なことは、もうバカみたいに実直にやった方がいいと思います。仕組みが分かったので、後はscaffoldを何度か写経したら完璧です。</p>
+<p>1行1行説明することで理解ができました。基本をやりなさいと言われた時、「それぐらい分かる」と思いがちで実際に素直にやらない場合もあるかもしれませんが、経験的にこの辺の基礎的なことは、もうバカみたいに実直にやった方がいいと思います。仕組みが分かったので、後はscaffoldを何度か写経したら完璧です。</p>
 </div>
   
   
