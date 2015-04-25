@@ -9,7 +9,7 @@
   <meta name="author" content="kanji">
 
   
-  <meta name="description" content="Rails初心者です。頑張ってます。Ruby on Railsのscaffoldで生成されたコードを全て説明できるようになるようにと言われたので、説明してみます。 bundle exec rails g scaffold Entry title:string body:text ファイル構成 &hellip;">
+  <meta name="description" content="HamlとSassを勉強しています。普通にHTMLとCSSで書けばいいものをなぜわざわざツールを覚える必要があるのか？と疑問で今までやってきませんでしたが、やってみると便利ですね。この手の技術は基本的に難しいことはなく、ひたすら書きまくって慣れるしかないです。 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -40,7 +40,7 @@
   <header role="banner"><hgroup>
   <h1><a href="/">console.log(&#8216;blog&#8217;) | puts &#8216;blog&#8217;</a></h1>
   
-    <h2>javascriptとかRubyとか</h2>
+    <h2>JavascriptとかRubyとか</h2>
   
 </hgroup>
 
@@ -90,6 +90,184 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2015/04/25/haml-sass/">HamlとSassをよしなに変換してくれるGruntfileを書いた</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2015-04-25T08:44:44+09:00'><span class='date'><span class='date-month'>Apr</span> <span class='date-day'>25</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>8:44 am</span></time>
+        
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><img src="../images/haml.png">
+<img src="../images/sass-logo.png"></p>
+
+<p>HamlとSassを勉強しています。普通にHTMLとCSSで書けばいいものをなぜわざわざツールを覚える必要があるのか？と疑問で今までやってきませんでしたが、やってみると便利ですね。この手の技術は基本的に難しいことはなく、ひたすら書きまくって慣れるしかないです。</p>
+
+<p>HamlやSassを書きまくっていると、どうしてもコマンドラインを打つ手間が面倒くさくなってきます。GruntとかGulpとか流行っているのが体感的に分かりました。今からだとGulpの方がいいのかもしれませんが、Watchされて手間が少なくなれば目的を満たせるので、情報量も多いGruntで自動化してみました。CoffeeScriptでGruntfileが書けたので「もうこれでいいじゃん！」ってな感じでGulpを試すモチベーションがあまり湧きませんでした。一応、CoffeeScriptのタスクやJavascriptのテストのタスクも追加してみました。HamlとSassに慣れたらCoffeeScriptでjQueryのコードをシンプル化してみようと思っております。</p>
+
+<p><a href="https://github.com/kanjihtmt/frontend">https://github.com/kanjihtmt/frontend</a></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">module</span><span class="p">.</span><span class="nx">exports</span> <span class="o">=</span> <span class="p">(</span><span class="nx">grunt</span><span class="p">)</span> <span class="o">-&gt;</span>
+</span><span class='line'>  <span class="nx">pkg</span> <span class="o">=</span> <span class="nx">grunt</span><span class="p">.</span><span class="nx">file</span><span class="p">.</span><span class="nx">readJSON</span> <span class="s1">&#39;package.json&#39;</span>
+</span><span class='line'>  <span class="nx">grunt</span><span class="p">.</span><span class="nx">initConfig</span>
+</span><span class='line'>    <span class="nx">coffeelint</span><span class="o">:</span>
+</span><span class='line'>      <span class="nx">app</span><span class="o">:</span>
+</span><span class='line'>        <span class="nx">files</span><span class="o">:</span>
+</span><span class='line'>          <span class="nx">src</span><span class="o">:</span> <span class="p">[</span>
+</span><span class='line'>            <span class="s1">&#39;Gruntfile.coffee&#39;</span><span class="p">,</span>
+</span><span class='line'>            <span class="s1">&#39;src/**/*.coffee&#39;</span><span class="p">,</span>
+</span><span class='line'>            <span class="s1">&#39;test/**/*.coffee&#39;</span>
+</span><span class='line'>          <span class="p">]</span>
+</span><span class='line'>    <span class="nx">simplemocha</span><span class="o">:</span>
+</span><span class='line'>      <span class="nx">all</span><span class="o">:</span>
+</span><span class='line'>        <span class="nx">src</span><span class="o">:</span> <span class="p">[</span><span class="s1">&#39;test/**/*.coffee&#39;</span><span class="p">]</span>
+</span><span class='line'>        <span class="nx">options</span><span class="o">:</span>
+</span><span class='line'>          <span class="nx">ui</span><span class="o">:</span> <span class="s1">&#39;bdd&#39;</span>
+</span><span class='line'>    <span class="nx">coffee</span><span class="o">:</span>
+</span><span class='line'>      <span class="nx">compile</span><span class="o">:</span>
+</span><span class='line'>        <span class="nx">files</span><span class="o">:</span> <span class="p">[</span>
+</span><span class='line'>           <span class="nx">expand</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class='line'>           <span class="nx">cwd</span><span class="o">:</span> <span class="s1">&#39;src&#39;</span><span class="p">,</span>
+</span><span class='line'>           <span class="nx">src</span><span class="o">:</span> <span class="s1">&#39;*.coffee&#39;</span><span class="p">,</span>
+</span><span class='line'>           <span class="nx">dest</span><span class="o">:</span> <span class="s1">&#39;js&#39;</span><span class="p">,</span>
+</span><span class='line'>           <span class="nx">ext</span><span class="o">:</span> <span class="s1">&#39;.js&#39;</span>
+</span><span class='line'>        <span class="p">]</span>
+</span><span class='line'>    <span class="nx">haml</span><span class="o">:</span>
+</span><span class='line'>      <span class="nx">dist</span><span class="o">:</span>
+</span><span class='line'>        <span class="nx">files</span><span class="o">:</span> <span class="p">[</span>
+</span><span class='line'>          <span class="nx">expand</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class='line'>          <span class="nx">cwd</span><span class="o">:</span> <span class="s1">&#39;haml&#39;</span><span class="p">,</span>
+</span><span class='line'>          <span class="nx">src</span><span class="o">:</span> <span class="s1">&#39;*.haml&#39;</span><span class="p">,</span>
+</span><span class='line'>          <span class="nx">dest</span><span class="o">:</span> <span class="s1">&#39;.&#39;</span><span class="p">,</span>
+</span><span class='line'>          <span class="nx">ext</span><span class="o">:</span> <span class="s1">&#39;.html&#39;</span>
+</span><span class='line'>        <span class="p">]</span>
+</span><span class='line'>    <span class="nx">sass</span><span class="o">:</span>
+</span><span class='line'>      <span class="nx">dist</span><span class="o">:</span>
+</span><span class='line'>        <span class="nx">options</span><span class="o">:</span>
+</span><span class='line'>          <span class="nx">style</span><span class="o">:</span> <span class="s1">&#39;expanded&#39;</span>
+</span><span class='line'>        <span class="nx">files</span><span class="o">:</span> <span class="p">[</span>
+</span><span class='line'>          <span class="nx">expand</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class='line'>          <span class="nx">cwd</span><span class="o">:</span> <span class="s1">&#39;sass&#39;</span><span class="p">,</span>
+</span><span class='line'>          <span class="nx">src</span><span class="o">:</span> <span class="p">[</span><span class="s1">&#39;*.scss&#39;</span><span class="p">],</span>
+</span><span class='line'>          <span class="nx">dest</span><span class="o">:</span> <span class="s1">&#39;css&#39;</span><span class="p">,</span>
+</span><span class='line'>          <span class="nx">ext</span><span class="o">:</span> <span class="s1">&#39;.css&#39;</span>
+</span><span class='line'>        <span class="p">]</span>
+</span><span class='line'>    <span class="nx">watch</span><span class="o">:</span>
+</span><span class='line'>      <span class="nx">css</span><span class="o">:</span>
+</span><span class='line'>        <span class="nx">files</span><span class="o">:</span> <span class="s1">&#39;sass/*.scss&#39;</span>
+</span><span class='line'>        <span class="nx">tasks</span><span class="o">:</span> <span class="p">[</span><span class="s1">&#39;sass&#39;</span><span class="p">]</span>
+</span><span class='line'>      <span class="nx">haml</span><span class="o">:</span>
+</span><span class='line'>        <span class="nx">files</span><span class="o">:</span> <span class="s1">&#39;haml/*.haml&#39;</span>
+</span><span class='line'>        <span class="nx">tasks</span><span class="o">:</span> <span class="p">[</span><span class="s1">&#39;haml&#39;</span><span class="p">]</span>
+</span><span class='line'>      <span class="nx">scripts</span><span class="o">:</span>
+</span><span class='line'>        <span class="nx">files</span><span class="o">:</span> <span class="p">[</span>
+</span><span class='line'>          <span class="s1">&#39;src/**/*.coffee&#39;</span><span class="p">,</span>
+</span><span class='line'>          <span class="s1">&#39;test/**/*.coffee&#39;</span><span class="p">,</span>
+</span><span class='line'>        <span class="p">]</span>
+</span><span class='line'>        <span class="nx">tasks</span><span class="o">:</span> <span class="p">[</span>
+</span><span class='line'>          <span class="s1">&#39;coffeelint&#39;</span><span class="p">,</span>
+</span><span class='line'>          <span class="s1">&#39;coffee&#39;</span>
+</span><span class='line'>          <span class="s1">&#39;simplemocha&#39;</span>
+</span><span class='line'>        <span class="p">]</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">for</span> <span class="nx">t</span> <span class="nx">of</span> <span class="nx">pkg</span><span class="p">.</span><span class="nx">devDependencies</span>
+</span><span class='line'>    <span class="k">if</span> <span class="nx">t</span><span class="p">.</span><span class="nx">substring</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span> <span class="nx">is</span> <span class="s1">&#39;grunt-&#39;</span>
+</span><span class='line'>      <span class="nx">grunt</span><span class="p">.</span><span class="nx">loadNpmTasks</span> <span class="nx">t</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nx">grunt</span><span class="p">.</span><span class="nx">registerTask</span> <span class="s1">&#39;default&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;watch&#39;</span><span class="p">]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>まだminifyや画像のリサイズなどのタスクは書いてません。Gruntfileはこれから徐々に育てていこうと思っております。(もしかしたらGulpに移行する気になるかもしれません) これを使って連休中は、レスポンシブデザインの学習のためSassとHamlを書きまくろうかと思ってます。</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>

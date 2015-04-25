@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Frontend | console.log('blog') | puts 'blog']]></title>
+  <link href="http://kanjihtmt.github.io/blog/categories/frontend/atom.xml" rel="self"/>
+  <link href="http://kanjihtmt.github.io/"/>
+  <updated>2015-04-25T09:42:49+09:00</updated>
+  <id>http://kanjihtmt.github.io/</id>
+  <author>
+    <name><![CDATA[kanji]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[HamlとSassをよしなに変換してくれるGruntfileを書いた]]></title>
+    <link href="http://kanjihtmt.github.io/blog/2015/04/25/haml-sass/"/>
+    <updated>2015-04-25T08:44:44+09:00</updated>
+    <id>http://kanjihtmt.github.io/blog/2015/04/25/haml-sass</id>
+    <content type="html"><![CDATA[<p><img src="../images/haml.png">
+<img src="../images/sass-logo.png"></p>
+
+<p>HamlとSassを勉強しています。普通にHTMLとCSSで書けばいいものをなぜわざわざツールを覚える必要があるのか？と疑問で今までやってきませんでしたが、やってみると便利ですね。この手の技術は基本的に難しいことはなく、ひたすら書きまくって慣れるしかないです。</p>
+
+<p>HamlやSassを書きまくっていると、どうしてもコマンドラインを打つ手間が面倒くさくなってきます。GruntとかGulpとか流行っているのが体感的に分かりました。今からだとGulpの方がいいのかもしれませんが、Watchされて手間が少なくなれば目的を満たせるので、情報量も多いGruntで自動化してみました。CoffeeScriptでGruntfileが書けたので「もうこれでいいじゃん！」ってな感じでGulpを試すモチベーションがあまり湧きませんでした。一応、CoffeeScriptのタスクやJavascriptのテストのタスクも追加してみました。HamlとSassに慣れたらCoffeeScriptでjQueryのコードをシンプル化してみようと思っております。</p>
+
+<p><a href="https://github.com/kanjihtmt/frontend">https://github.com/kanjihtmt/frontend</a></p>
+
+<pre><code class="javascript">module.exports = (grunt) -&gt;
+  pkg = grunt.file.readJSON 'package.json'
+  grunt.initConfig
+    coffeelint:
+      app:
+        files:
+          src: [
+            'Gruntfile.coffee',
+            'src/**/*.coffee',
+            'test/**/*.coffee'
+          ]
+    simplemocha:
+      all:
+        src: ['test/**/*.coffee']
+        options:
+          ui: 'bdd'
+    coffee:
+      compile:
+        files: [
+           expand: true,
+           cwd: 'src',
+           src: '*.coffee',
+           dest: 'js',
+           ext: '.js'
+        ]
+    haml:
+      dist:
+        files: [
+          expand: true,
+          cwd: 'haml',
+          src: '*.haml',
+          dest: '.',
+          ext: '.html'
+        ]
+    sass:
+      dist:
+        options:
+          style: 'expanded'
+        files: [
+          expand: true,
+          cwd: 'sass',
+          src: ['*.scss'],
+          dest: 'css',
+          ext: '.css'
+        ]
+    watch:
+      css:
+        files: 'sass/*.scss'
+        tasks: ['sass']
+      haml:
+        files: 'haml/*.haml'
+        tasks: ['haml']
+      scripts:
+        files: [
+          'src/**/*.coffee',
+          'test/**/*.coffee',
+        ]
+        tasks: [
+          'coffeelint',
+          'coffee'
+          'simplemocha'
+        ]
+
+  for t of pkg.devDependencies
+    if t.substring(0, 6) is 'grunt-'
+      grunt.loadNpmTasks t
+
+  grunt.registerTask 'default', ['watch']
+</code></pre>
+
+<p>まだminifyや画像のリサイズなどのタスクは書いてません。Gruntfileはこれから徐々に育てていこうと思っております。(もしかしたらGulpに移行する気になるかもしれません) これを使って連休中は、レスポンシブデザインの学習のためSassとHamlを書きまくろうかと思ってます。</p>
+]]></content>
+  </entry>
+  
+</feed>
